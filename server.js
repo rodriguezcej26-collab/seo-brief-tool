@@ -133,7 +133,7 @@ Genera un brief de contenido SEO completo y estructurado en español con este fo
 });
 
 // Iniciar servidor
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en puerto ${PORT}`);
 });
