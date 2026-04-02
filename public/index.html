@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEO Brief — Genera tu brief de contenido en segundos</title>
+  <meta name="description" content="Analiza el Top 10 de Google y genera un brief de contenido SEO completo con IA en segundos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface2: #18181f;
+      --border: #2a2a38;
+      --accent: #7c6dfa;
+      --accent2: #fa6d8f;
+      --accent3: #6dfacc;
+      --text: #e8e8f0;
+      --muted: #7070a0;
+      --radius: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NOISE TEXTURE */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* GLOW ORBS */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.12;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; right: -100px; }
+    .orb-2 { width: 400px; height: 400px; background: var(--accent2); bottom: 100px; left: -150px; }
+    .orb-3 { width: 300px; height: 300px; background: var(--accent3); top: 50%; left: 50%; transform: translate(-50%,-50%); }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* HEADER */
+    header {
+      padding: 52px 0 64px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(124,109,250,0.12);
+      border: 1px solid rgba(124,109,250,0.3);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    .badge::before { content: '●'; font-size: 8px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 18px;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      font-weight: 300;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(124,109,250,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* FORM */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    @media (max-width: 560px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .select-wrap { width: 100%; }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    input[type="text"] {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      padding: 13px 18px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,109,250,0.15);
+    }
+
+    input::placeholder { color: var(--muted); }
+
+    .select-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 13px 16px;
+      outline: none;
+      cursor: pointer;
+      min-width: 160px;
+      transition: border-color 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237070a0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+
+    select:focus { border-color: var(--accent); }
+
+    /* BUTTON */
+    .btn {
+      background: linear-gradient(135deg, var(--accent), #9b5de5);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 13px 28px;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(124,109,250,0.35);
+    }
+
+    .btn:hover:not(:disabled) {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px rgba(124,109,250,0.5);
+    }
+
+    .btn:active:not(:disabled) { transform: translateY(0); }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-full {
+      width: 100%;
+      padding: 15px;
+      font-size: 15px;
+      margin-top: 6px;
+    }
+
+    /* LOADING */
+    #loading {
+      display: none;
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .loading-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+      text-align: left;
+      max-width: 260px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      opacity: 0.4;
+      transition: opacity 0.4s;
+    }
+
+    .step.active { opacity: 1; color: var(--accent); }
+    .step.done { opacity: 0.7; color: var(--accent3); }
+    .step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+    /* ERROR */
+    #error {
+      display: none;
+      background: rgba(250,109,143,0.1);
+      border: 1px solid rgba(250,109,143,0.3);
+      border-radius: 10px;
+      padding: 16px 20px;
+      color: var(--accent2);
+      font-size: 14px;
+      margin-top: 16px;
+    }
+
+    /* RESULT */
+    #resultado { display: none; }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .result-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .keyword-tag {
+      background: rgba(109,250,204,0.12);
+      border: 1px solid rgba(109,250,204,0.25);
+      color: var(--accent3);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+
+    /* TOP 10 LIST */
+    .top10-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .serp-item {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      align-items: start;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      transition: border-color 0.2s;
+    }
+
+    .serp-item:hover { border-color: rgba(124,109,250,0.4); }
+
+    .serp-pos {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      background: rgba(124,109,250,0.1);
+      border-radius: 6px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .serp-title {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .serp-url {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* BRIEF OUTPUT */
+    .brief-content {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      font-size: 14px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .brief-content h2, .brief-content h3 {
+      font-family: 'Syne', sans-serif;
+      margin: 20px 0 8px;
+    }
+
+    /* COPY BUTTON */
+    .copy-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      padding: 8px 16px;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* SECTION TITLE */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 32px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* ANIMATE IN */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate { animation: fadeUp 0.5s ease both; }
+    .animate-delay-1 { animation-delay: 0.1s; }
+    .animate-delay-2 { animation-delay: 0.2s; }
+    .animate-delay-3 { animation-delay: 0.35s; }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 28px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="wrapper">
+
+    <header class="animate">
+      <div class="badge">IA + SerpApi</div>
+      <h1>Tu <span>Brief SEO</span><br/>listo en segundos</h1>
+      <p class="subtitle">Analiza el Top 10 de Google para cualquier keyword y obtén un brief de contenido completo generado con IA.</p>
+    </header>
+
+    <!-- FORMULARIO -->
+    <div class="card animate animate-delay-1">
+      <div class="form-grid">
+        <div class="field">
+          <label for="keyword">Keyword a analizar</label>
+          <input
+            type="text"
+            id="keyword"
+            placeholder="Ej: herramientas SEO gratuitas"
+            autocomplete="off"
+          />
+        </div>
+        <div class="select-wrap">
+          <label for="pais">País</label>
+          <select id="pais">
+            <option value="co">🇨🇴 Colombia</option>
+            <option value="es">🇪🇸 España</option>
+            <option value="mx">🇲🇽 México</option>
+            <option value="ar">🇦🇷 Argentina</option>
+            <option value="us">🇺🇸 USA (ES)</option>
+            <option value="pe">🇵🇪 Perú</option>
+            <option value="cl">🇨🇱 Chile</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-full" id="btnAnalizar" onclick="analizar()">
+        Generar Brief SEO →
+      </button>
+      <div id="error"></div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="card" id="loading">
+      <div class="spinner"></div>
+      <p class="loading-text">Analizando el Top 10 de Google...</p>
+      <div class="loading-steps">
+        <div class="step" id="step1"><span class="step-dot"></span> Consultando SerpApi</div>
+        <div class="step" id="step2"><span class="step-dot"></span> Obteniendo top 10</div>
+        <div class="step" id="step3"><span class="step-dot"></span> Analizando con IA</div>
+        <div class="step" id="step4"><span class="step-dot"></span> Generando brief</div>
+      </div>
+    </div>
+
+    <!-- RESULTADO -->
+    <div id="resultado">
+
+      <!-- TOP 10 -->
+      <div class="card animate">
+        <div class="result-header">
+          <span class="result-title">Top 10 de Google</span>
+          <span class="keyword-tag" id="kwTag"></span>
+        </div>
+        <div class="top10-grid" id="top10List"></div>
+      </div>
+
+      <!-- BRIEF -->
+      <div class="card animate animate-delay-1">
+        <div class="result-header">
+          <span class="result-title">Brief de Contenido SEO</span>
+          <button class="copy-btn" onclick="copiarBrief()">📋 Copiar brief</button>
+        </div>
+        <div class="brief-content" id="briefContent"></div>
+      </div>
+
+      <!-- NUEVO ANÁLISIS -->
+      <button class="btn btn-full animate animate-delay-2" onclick="reiniciar()">
+        ← Analizar otra keyword
+      </button>
+
+    </div>
+
+    <footer>
+      Generado con SerpApi + Claude AI · <span id="year"></span>
+    </footer>
+
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Enter key support
+    document.getElementById('keyword').addEventListener('keydown', e => {
+      if (e.key === 'Enter') analizar();
+    });
+
+    function setStep(stepNum) {
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById(`step${i}`);
+        if (i < stepNum) el.className = 'step done';
+        else if (i === stepNum) el.className = 'step active';
+        else el.className = 'step';
+      }
+    }
+
+    async function analizar() {
+      const keyword = document.getElementById('keyword').value.trim();
+      const pais = document.getElementById('pais').value;
+      const errorEl = document.getElementById('error');
+
+      errorEl.style.display = 'none';
+
+      if (!keyword) {
+        errorEl.textContent = '⚠️ Por favor escribe una keyword para analizar.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      // Mostrar loading
+      document.getElementById('btnAnalizar').disabled = true;
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('resultado').style.display = 'none';
+
+      // Simular progreso visual
+      setStep(1);
+      setTimeout(() => setStep(2), 800);
+      setTimeout(() => setStep(3), 2000);
+      setTimeout(() => setStep(4), 3500);
+
+      try {
+        const res = await fetch('/api/analizar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ keyword, pais })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Error al generar el brief');
+        }
+
+        // Mostrar resultados
+        document.getElementById('loading').style.display = 'none';
+        mostrarResultados(data);
+
+      } catch (err) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('btnAnalizar').disabled = false;
+        errorEl.textContent = '❌ ' + err.message;
+        errorEl.style.display = 'block';
+      }
+    }
+
+    function mostrarResultados(data) {
+      // Tag keyword
+      document.getElementById('kwTag').textContent = data.keyword;
+
+      // Top 10
+      const listEl = document.getElementById('top10List');
+      listEl.innerHTML = data.top10.map(r => `
+        <div class="serp-item">
+          <div class="serp-pos">${r.posicion}</div>
+          <div>
+            <div class="serp-title">${escapeHtml(r.titulo)}</div>
+            <div class="serp-url">${escapeHtml(r.url)}</div>
+          </div>
+        </div>
+      `).join('');
+
+      // Brief con formato markdown básico
+      document.getElementById('briefContent').innerHTML = formatBrief(data.brief);
+
+      // Mostrar sección
+      document.getElementById('resultado').style.display = 'block';
+      document.getElementById('btnAnalizar').disabled = false;
+
+      // Scroll suave
+      document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function formatBrief(text) {
+      return text
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function copiarBrief() {
+      const texto = document.getElementById('briefContent').innerText;
+      navigator.clipboard.writeText(texto).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✅ ¡Copiado!';
+        setTimeout(() => btn.textContent = '📋 Copiar brief', 2000);
+      });
+    }
+
+    function reiniciar() {
+      document.getElementById('resultado').style.display = 'none';
+      document.getElementById('keyword').value = '';
+      document.getElementById('keyword').focus();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
