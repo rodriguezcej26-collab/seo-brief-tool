@@ -94,7 +94,7 @@ Genera un brief de contenido SEO completo y estructurado en español con este fo
 
     // Llamada a Google Gemini API (gratis)
     const geminiResponse = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
       {
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
