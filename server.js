@@ -47,7 +47,7 @@ app.post('/api/analizar', async (req, res) => {
       descripcion: r.snippet || ''
     }));
 
-    // PASO 2: Enviar a Claude API para generar el brief
+    // PASO 2: Enviar a Google Gemini para generar el brief
     console.log('Generando brief con IA...');
 
     const prompt = `Eres un experto en SEO y marketing de contenidos. 
@@ -92,23 +92,19 @@ Genera un brief de contenido SEO completo y estructurado en español con este fo
 ## 💡 ÁNGULO DIFERENCIADOR
 [Qué puede hacer este artículo para destacar sobre la competencia actual]`;
 
-    const claudeResponse = await axios.post(
-      'https://api.anthropic.com/v1/messages',
+    // Llamada a Google Gemini API (gratis)
+    const geminiResponse = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
       {
-        model: 'claude-opus-4-6',
-        max_tokens: 2000,
-        messages: [{ role: 'user', content: prompt }]
-      },
-      {
-        headers: {
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json'
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          maxOutputTokens: 2000,
+          temperature: 0.7
         }
       }
     );
 
-    const brief = claudeResponse.data.content[0].text;
+    const brief = geminiResponse.data.candidates[0].content.parts[0].text;
 
     // Devolver resultado completo
     res.json({
@@ -121,7 +117,7 @@ Genera un brief de contenido SEO completo y estructurado en español con este fo
   } catch (error) {
     console.error('Error:', error.response?.data || error.message);
     
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 || error.response?.status === 403) {
       return res.status(401).json({ error: 'API Key inválida. Verifica tus credenciales.' });
     }
     
